@@ -1,4 +1,5 @@
 package ma.youcode.lineperma.ui;
+import java.util.Scanner;
 
 import ma.youcode.lineperma.Model.User;
 import ma.youcode.lineperma.Service.UserService;
@@ -44,4 +45,25 @@ public class Consoleapp {
             }
         }
     }
+
+    public void Loggedin(User user){
+        while (true) {
+            String name = user.getName();
+            System.out.print("lineperma@" + name + ">" );
+            String choice = scanner.nextLine();
+
+            switch (choice.toLowerCase().trim()) {
+                case "help":
+                    System.out.println("Not avaible");
+                    break;
+                case "logout":
+                        System.out.println("LoggingOut");
+                        return;
+                default:
+                    System.out.println("Doesnt Exist Type 'help' for help");
+                    break;
+            }
+        }
+    }
+    
 }
