@@ -8,10 +8,10 @@ import ma.youcode.lineperma.Service.UserService;
 public class Consoleapp {
 
     Scanner scanner = new Scanner(System.in);
-    UserService User = new UserService();
+    UserService user = new UserService();
     public void demarrer(){
         
-        User.loadUsersToMap();
+        user.loadUsersToMap();
         System.out.println("=====================Welcome=======================");
         System.out.println("pick a command From the following : SignUp | Login | help | Exit");
 
@@ -21,12 +21,10 @@ public class Consoleapp {
 
             switch (choice.toLowerCase().trim()) {
                 case "signup":
-                    UserService User2 = new UserService();
-                    User2.CreateUser();
+                    user.CreateUser();
                     break;
                 case "login":
-                    UserService login = new UserService();
-                    User check = login.login();
+                    User check = user.login();
                     if (check != null) {
                         Loggedin(check);
                     }

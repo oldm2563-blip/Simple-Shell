@@ -17,14 +17,13 @@ public class UserService {
 
     Scanner scanner = new Scanner(System.in);
 
-    public Map<String, User> loadUsersToMap() {
+    Map<String, User> userMap = new HashMap<>();
+    Path path = Paths.get("C:\\java-bootcamp\\simple-shell\\src\\main\\resources\\Users.txt");
+    public void loadUsersToMap() {
 
-        Map<String, User> userMap = new HashMap<>();
-        Path path = Paths.get("C:\\java-bootcamp\\simple-shell\\src\\main\\resources\\Users.txt");
 
-        if (Files.exists(path)) {
-        } else {
-            try (FileWriter writer = new FileWriter(path.toFile(), true)) {
+        if (!Files.exists(path)) {
+             try (FileWriter writer = new FileWriter(path.toFile(), true)) {
             } catch (IOException e) {
                 System.out.println("Could not create/write file");
             }
@@ -38,20 +37,18 @@ public class UserService {
                 if (parts.length == 2) {
                     String username = parts[0].trim();
                     String hashedPassword = parts[1].trim();
-                    
                     userMap.put(username, new User(username, hashedPassword));
+ 
                 }
             }
         } catch (IOException e) {
             System.out.println("Error reading file: " + e.getMessage());
         }
-        return userMap;
+    
     }
 
     public void CreateUser(){
-        Map<String, User> userMap = loadUsersToMap();
-        String filePath = "C:\\java-bootcamp\\simple-shell\\src\\main\\resources\\Users.txt ";
-        
+      
         System.out.print("Enter username: ");
         String name = scanner.nextLine().trim();
 
@@ -67,7 +64,7 @@ public class UserService {
 
 
 
-        try (FileWriter writer = new FileWriter(filePath, true)) {
+        try (FileWriter writer = new FileWriter(path.toFile(), true)) {
                 writer.write(name + ":" + hashedPassword + System.lineSeparator());
                 System.out.println("User registered successfully.");
             }
@@ -78,15 +75,16 @@ public class UserService {
 }
 
     public User login(){
-        Map<String, User> userMap = loadUsersToMap();
+        System.out.println(userMap.size());
         System.out.print("Enter username: ");
         String name = scanner.nextLine().trim();
 
         System.out.print("Enter password: ");
         String password = scanner.nextLine().trim();
-
+        System.out.println(userMap.size());
         if(userMap.containsKey(name)){
             User existingUser = userMap.get(name);
+            System.out.println("Existing user: " + existingUser.getName());
             if(BCrypt.checkpw(password, existingUser.getPassword())){
                 System.out.println("user Logged in");
                 return existingUser;
