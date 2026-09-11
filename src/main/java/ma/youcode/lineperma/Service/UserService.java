@@ -71,6 +71,21 @@ public class UserService {
              catch (IOException e) {
             System.out.println("Could not write to file: " + e.getMessage());
         }
+        try {
+            List<String> lines = Files.readAllLines(path);
+            for (String line : lines) {
+                if (line.trim().isEmpty()) continue;
+                String[] parts = line.split(":", 2);
+                if (parts.length == 2) {
+                    String username = parts[0].trim();
+                    String hashedPasswords = parts[1].trim();
+                    userMap.put(username, new User(username, hashedPasswords));
+ 
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error reading file: " + e.getMessage());
+        }
     
 }
 
