@@ -50,10 +50,48 @@ public class Consoleapp {
             System.out.print("lineperma@" + name + ">" );
             String choice = scanner.nextLine();
 
-            switch (choice.toLowerCase().trim()) {
+
+            switch (command[0].toLowerCase().trim()) {
                 case "help":
-                    System.out.println("Not avaible");
+                    System.out.println("Available commands: touch, nano, cat, ls, chmod, logout");
                     break;
+
+                case "touch":
+                    if (command.length < 2) {
+                        System.out.println("Usage: touch <filename>");
+                        break;
+                    }
+                    fille.touch(command[1], user.getName());
+                    break;
+
+                case "nano":
+                    if (command.length < 2) {
+                        System.out.println("Usage: nano <filename>");
+                        break;
+                    }
+                    fille.nano(command[1], user.getName());
+                    break;
+
+                case "cat":
+                    if (command.length < 2) {
+                        System.out.println("Usage: cat <filename>");
+                        break;
+                    }
+                    fille.cat(command[1], user.getName());
+                    break;
+
+                case "ls":
+                    fille.ls();
+                    break;
+
+                case "chmod":
+                    if (command.length < 3) {
+                        System.out.println("Usage: chmod <filename> <permissions>");
+                        break;
+                    }
+                    fille.chmod(command[1], command[2], user.getName());
+                    break;
+
                 case "logout":
                         System.out.println("LoggingOut");
                         return;
