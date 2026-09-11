@@ -19,4 +19,18 @@ public class Filen {
         return per;
     }
 
+
+    public void setFile(String file) {
+        this.file = file;
+    }
+
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+
+    public void setPermission(String[] permission) {
+        this.permission = permission;
+    }
 }
