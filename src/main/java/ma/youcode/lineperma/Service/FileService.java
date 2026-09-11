@@ -13,6 +13,11 @@ import java.util.Scanner;
 import ma.youcode.lineperma.Model.Filen;
 
 public class FileService {
+
+    Scanner scanner = new Scanner(System.in);
+    Map<String, Filen> fileMap = new HashMap<>();
+    Path path2 = Paths.get("C:\\java-bootcamp\\simple-shell\\src\\main\\resources\\files.txt");
+
     public void starup(){
         if (!Files.exists(path2)) {
              try (FileWriter writer = new FileWriter(path2.toFile(), true)) {
