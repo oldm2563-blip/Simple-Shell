@@ -50,6 +50,12 @@ public class Consoleapp {
             String name = user.getName();
             System.out.print("lineperma@" + name + ">" );
             String choice = scanner.nextLine();
+            
+            if (choice.isEmpty()) continue;
+            
+            
+            String[] command = choice.split("\\s+");
+            
 
 
             switch (command[0].toLowerCase().trim()) {
