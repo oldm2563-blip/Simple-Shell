@@ -8,9 +8,10 @@ import ma.youcode.lineperma.Service.UserService;
 public class Consoleapp {
 
     Scanner scanner = new Scanner(System.in);
+    FileService fille = new FileService();
     UserService user = new UserService();
     public void demarrer(){
-        
+        fille.starup();
         user.loadUsersToMap();
         System.out.println("=====================Welcome=======================");
         System.out.println("pick a command From the following : SignUp | Login | help | Exit");
