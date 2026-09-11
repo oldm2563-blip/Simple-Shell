@@ -130,4 +130,39 @@ public class FileService {
         }
         
     }
+
+    public void chmod(String name, String newPer, String username){
+
+        Filen fileObj = fileMap.get(name);
+        if (fileObj == null) {
+            System.out.println("File does not exist: " + name);
+            return;
+        }
+
+        if (!fileObj.getusername().equals(username)) {
+            System.out.println("Permission denied: Only the owner (" + fileObj.getusername() + ") can change permissions.");
+            return;
+        }
+
+        if (newPer.length() != 3) {
+            System.out.println("Invalid format. Permission must be 3 characters (e.g., rwx, rw-, ---)");
+            return;
+        }
+
+        String[] permsArray = newPer.split("");
+        fileObj.setPermission(permsArray);
+
+        System.out.println("Permissions updated to '" + newPer + "' for " + name);
+
+
+        try (FileWriter writer = new FileWriter(path2.toFile(), false)) {
+            for (Filen file : fileMap.values()) {
+                String line = file.getFile() + ":" + file.getusername() + ":" + file.getpermissioString();
+                writer.write(line + System.lineSeparator());
+            }
+        } catch (IOException e) {
+            System.out.println("Error saving permissions to file: " + e.getMessage());
+        }
+    } 
+
 }
