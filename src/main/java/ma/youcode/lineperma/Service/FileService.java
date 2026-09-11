@@ -24,4 +24,25 @@ public class FileService {
         }
 
     }
+
+    public void touch(String name, String username){
+
+        File file = new File("C:\\java-bootcamp\\simple-shell\\src\\main\\resources\\Linux\\" + name ); 
+
+        try{
+            if (!file.exists()) {
+                file.createNewFile();
+                System.out.println("File created!");
+                try (FileWriter writer = new FileWriter(path2.toFile(), true)) {
+                    writer.write(name + ":" + username + ":---" + System.lineSeparator());
+                }
+                String[] perms = {"-", "-", "-"};
+                fileMap.put(name, new Filen(name, username, perms));
+            }else {System.out.println("File already exists.");}
+
+        }catch(IOException e){
+            System.out.println("Could not create/write file");
+        }
+
+    }
 }
