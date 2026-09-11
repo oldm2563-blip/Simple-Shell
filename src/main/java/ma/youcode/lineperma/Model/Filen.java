@@ -11,4 +11,12 @@ public class Filen {
         this.permission = permission;
     }
 
+
+    public String getFile() { return file; }
+    public String getusername() { return username; }
+    public String getpermissioString(){
+        String per = String.join("", permission);
+        return per;
+    }
+
 }
