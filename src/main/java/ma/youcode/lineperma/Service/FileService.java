@@ -1,4 +1,17 @@
 package ma.youcode.lineperma.Service;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
+import ma.youcode.lineperma.Model.Filen;
+
 public class FileService {
     public void starup(){
         if (!Files.exists(path2)) {
