@@ -100,10 +100,11 @@ public class Consoleapp {
                     break;
 
                 case "logout":
-                        System.out.println("LoggingOut");
-                        return;
+                    System.out.println("Logging out...");
+                    return;
+
                 default:
-                    System.out.println("Doesnt Exist Type 'help' for help");
+                    System.out.println("Command doesn't exist. Type 'help' for available commands.");
                     break;
             }
         }
