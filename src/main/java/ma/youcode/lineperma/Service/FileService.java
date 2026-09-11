@@ -17,4 +17,11 @@ public class FileService {
                 String[] permission = parts[2].split("");
                 fileMap.put(fileName, new Filen(fileName, userName, permission));
             }
+
+        }
+        catch(IOException e){
+            System.out.println("Could not create/write file");
+        }
+
+    }
 }
