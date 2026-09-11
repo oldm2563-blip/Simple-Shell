@@ -104,4 +104,30 @@ public class FileService {
         }
         
     }
+
+    public void cat(String name, String username){
+        Filen checker = fileMap.get(name);
+
+        if (checker == null) {
+        System.out.println("File does not exist: " + name);
+        return;
+        }
+
+        if(!checker.getusername().equals(username) && !checker.getpermissioString().contains("r")){
+            System.out.println("You dont have acces");
+            return;
+        }
+
+        Path file = Paths.get("C:\\java-bootcamp\\simple-shell\\src\\main\\resources\\Linux\\" + name );
+        try{
+            List<String> lines = Files.readAllLines(file);
+            for(String line : lines){
+                System.out.println(line);
+            }
+
+        }catch(IOException e){
+            System.out.println("Could not read file: " + e.getMessage());
+        }
+        
+    }
 }
