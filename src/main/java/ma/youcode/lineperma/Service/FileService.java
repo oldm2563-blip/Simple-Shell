@@ -45,4 +45,11 @@ public class FileService {
         }
 
     }
+
+    public void ls(){
+        for(Map.Entry<String, Filen> entry : fileMap.entrySet()){
+            Filen file = entry.getValue();
+            System.out.println(file.getFile() + " | " + file.getpermissioString() + " | " + file.getusername());
+        }
+    }
 }
