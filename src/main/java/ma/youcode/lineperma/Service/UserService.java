@@ -80,7 +80,6 @@ public class UserService {
                     String username = parts[0].trim();
                     String hashedPasswords = parts[1].trim();
                     userMap.put(username, new User(username, hashedPasswords));
- 
                 }
             }
         } catch (IOException e) {
