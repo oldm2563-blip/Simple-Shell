@@ -3,19 +3,22 @@ import java.util.Scanner;
 
 import ma.youcode.lineperma.Model.User;
 import ma.youcode.lineperma.Service.FileService;
+import ma.youcode.lineperma.Service.LogsService;
 import ma.youcode.lineperma.Service.UserService;
 
 
 public class Consoleapp {
 
     Scanner scanner = new Scanner(System.in);
-    FileService fille = new FileService();
+    LogsService log = new LogsService();
+    FileService fille = new FileService(log);
     UserService user = new UserService();
     public void demarrer(){
         fille.starup();
         user.loadUsersToMap();
+        log.Startup();
         System.out.println("=====================Welcome=======================");
-        System.out.println("pick a command From the following : SignUp | Login | help | Exit");
+        System.out.println("pick a command From the following : SignUp | Login | help | Exit | Stats");
 
         while (true) {
             System.out.print("lineperma>");
@@ -24,6 +27,9 @@ public class Consoleapp {
             switch (choice.toLowerCase().trim()) {
                 case "signup":
                     user.CreateUser();
+                    break;
+                case "stats":
+                    log.stats();
                     break;
                 case "login":
                     User check = user.login();

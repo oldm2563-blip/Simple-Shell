@@ -17,6 +17,12 @@ public class FileService {
     Scanner scanner = new Scanner(System.in);
     Map<String, Filen> fileMap = new HashMap<>();
     Path path2 = Paths.get("C:\\java-bootcamp\\simple-shell\\src\\main\\resources\\files.txt");
+    LogsService log;
+
+
+    public FileService(LogsService log){
+        this.log = log;
+    }
 
     public void starup(){
         if (!Files.exists(path2)) {
@@ -61,7 +67,6 @@ public class FileService {
         }catch(IOException e){
             System.out.println("Could not create/write file");
         }
-
     }
 
     public void ls(){
@@ -78,12 +83,14 @@ public class FileService {
         Filen checker = fileMap.get(name);
 
         if (checker == null) {
-        System.out.println("File does not exist: " + name);
-        return;
+            System.out.println("File does not exist: " + name);
+            log.addLog(username, name, "Write", "Refused");
+            return;
         }
 
         if(!checker.getusername().equals(username) && !checker.getpermissioString().contains("w")){
             System.out.println("You dont have acces");
+            log.addLog(username, name, "Write", "Refused");
             return;
         }
 
@@ -120,6 +127,8 @@ public class FileService {
         }catch(IOException e){
             System.out.println("Could not create/write file");
         }
+
+        log.addLog(username, name, "Write", "OK");
         
     }
 
@@ -133,6 +142,7 @@ public class FileService {
 
         if(!checker.getusername().equals(username) && !checker.getpermissioString().contains("r")){
             System.out.println("You dont have acces");
+            log.addLog(username, name, "Read", "Refused");
             return;
         }
 
@@ -141,11 +151,13 @@ public class FileService {
             List<String> lines = Files.readAllLines(file);
             for(String line : lines){
                 System.out.println(line);
+
             }
 
         }catch(IOException e){
             System.out.println("Could not read file: " + e.getMessage());
         }
+        log.addLog(username, name, "Read", "OK");
         
     }
 
