@@ -1,4 +1,0 @@
-khalid.txt:Khalid:rw-
-redoaune.txt:Khalid:---
-helloWirld.txt:aziz:---
-lol.txt:Khalid:---

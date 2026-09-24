@@ -1,5 +1,0 @@
-Khalid:$2a$12$2rJeGBUsEIaag86dbaVF7OvkT1tNFdOVWLmRB7P5mkVU73nDbqlNW
-Chahd:$2a$12$flYh8ZMHvy3PDUZEfQt20uF.Vd8y6kmQgTSS9rfFuLgTCUygw4Yz2
-aziz:$2a$12$/5mxyNxEDDxFAokggn98HO8GpuLwvi7WUJDrbrQ9xnVwxbNpuqBja
-hello:$2a$12$ug4EItZ3poG/LofSq/eDFO3pI7skQ239DAWOVYXYIAJ4PMYYBd7Pi
-jk:$2a$12$g3jxHEaHpeVy2qTONUy3.OCm0o58wwLAH5bdUl/6pXNYsVRm3yJxu

@@ -14,9 +14,6 @@ public class Consoleapp {
     FileService fille = new FileService(log);
     UserService user = new UserService();
     public void demarrer(){
-        fille.starup();
-        user.loadUsersToMap();
-        log.Startup();
         System.out.println("=====================Welcome=======================");
         System.out.println("pick a command From the following : SignUp | Login | help | Exit | Stats");
 
@@ -29,7 +26,7 @@ public class Consoleapp {
                     user.CreateUser();
                     break;
                 case "stats":
-                    log.stats();
+                    log.statisticsMenu();
                     break;
                 case "login":
                     User check = user.login();
@@ -75,7 +72,7 @@ public class Consoleapp {
                         System.out.println("Usage: touch <filename>");
                         break;
                     }
-                    fille.touch(command[1], user.getName());
+                    fille.touch(command[1], user);
                     break;
 
                 case "nano":
@@ -83,7 +80,7 @@ public class Consoleapp {
                         System.out.println("Usage: nano <filename>");
                         break;
                     }
-                    fille.nano(command[1], user.getName());
+                    fille.nano(command[1], user);
                     break;
 
                 case "cat":
@@ -91,7 +88,7 @@ public class Consoleapp {
                         System.out.println("Usage: cat <filename>");
                         break;
                     }
-                    fille.cat(command[1], user.getName());
+                    fille.cat(command[1], user);
                     break;
 
                 case "ls":
@@ -103,7 +100,7 @@ public class Consoleapp {
                         System.out.println("Usage: chmod <filename> <permissions>");
                         break;
                     }
-                    fille.chmod(command[1], command[2], user.getName());
+                    fille.chmod(command[1], command[2], user);
                     break;
 
                 case "logout":
