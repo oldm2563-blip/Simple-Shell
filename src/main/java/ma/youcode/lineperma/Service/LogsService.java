@@ -2,120 +2,116 @@ package ma.youcode.lineperma.Service;
 
 import ma.youcode.lineperma.Model.Logs;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
-import java.util.stream.Collectors;
+import ma.youcode.lineperma.Model.Filen;
+import ma.youcode.lineperma.DAO.LogDao;
+import ma.youcode.lineperma.DAO.UserDao;
+
 
 public class LogsService {
     List<Logs> LogsList = new ArrayList<>();
-    File filepath = new File("C:\\java-bootcamp\\simple-shell\\src\\main\\resources\\access.log");
     Scanner scanner = new Scanner(System.in);
+    LogDao concon = new LogDao();
 
-    public void Startup(){
-        if(!filepath.exists()){
-            try (FileWriter writer = new FileWriter(filepath, true)){
-            } catch (Exception e) {
-                System.out.println("didnt work");
+
+    public void newLog(Filen file, String action, String result, int userId){
+        concon.save(new Logs(LocalDate.now(), LocalTime.now().truncatedTo(ChronoUnit.SECONDS), userId, action, file.getId(), result));
+    }
+
+//----------------------------------------------------------------------------------------------------------------------
+
+    public void statisticsMenu() { 
+
+    int choice;
+
+    do {
+        System.out.println("\n===== LOG STATISTICS =====");
+        System.out.println("1. Nombre total d'actions");
+        System.out.println("2. Nombre d'accès refusés");
+        System.out.println("3. Utilisateurs distincts");
+        System.out.println("4. Actions par utilisateur");
+        System.out.println("5. Top 3 des fichiers consultés");
+        System.out.println("6. Accès refusés d'un utilisateur");
+        System.out.println("7. Utilisateur le plus actif");
+        System.out.println("8. Répartition des actions par type");
+        System.out.println("0. Quitter");
+        System.out.print("Votre choix : ");
+
+        choice = scanner.nextInt();
+        scanner.nextLine();
+
+        switch (choice) {
+
+            case 1:
+                System.out.println("Total actions : " + concon.getTotalActions());
+                break;
+
+            case 2:
+                System.out.println("Accès refusés : " + concon.getDeniedAccesses());
+                break;
+
+            case 3:
+                System.out.println("Utilisateurs distincts : " + concon.getDistinctUsers());
+                break;
+
+            case 4:
+                System.out.println("\n--- Actions par utilisateur ---");
+                concon.getActionsByUser().forEach((user, actions) ->
+                        System.out.println(user + " : " + actions)
+                );
+                break;
+
+            case 5:
+                System.out.println("\n--- Top 3 fichiers ---");
+                concon.getTop3Files().forEach((file, actions) ->
+                        System.out.println(file + " : " + actions)
+                );
+                break;
+
+                case 6:
+                    System.out.print("l'utilisateur : ");
+                    String username = scanner.nextLine();
+
+                    int userid = new UserDao().findByUsername(username).getId();
+
+                    System.out.println("\n--- Accès refusés ---");
+
+                    concon.getDeniedAccessesByUser(userid).forEach(log ->
+                            System.out.println(
+                                    log.getDate() + " " +
+                                    log.getTime() + " | " +
+                                    log.getAction() + " | " +
+                                    log.getFile() + " | " +
+                                    log.getResult()
+                            )
+                    );
+                    break;
+
+            case 7:
+                System.out.println("\n--- Utilisateur le plus actif ---");
+                concon.getMostActiveUser().forEach((user, actions) ->
+                        System.out.println(user + " : " + actions)
+                );
+                break;
+
+            case 8:
+                System.out.println("\n--- Actions par type ---");
+                concon.getActionsByType().forEach((action, count) ->
+                        System.out.println(action + " : " + count)
+                );
+                break;
+
+            case 0:
+                System.out.println("Au revoir !");
+                break;
+
+            default:
+                System.out.println("Choix invalide.");
             }
-        }
 
-        try {
-            List<String> lines = Files.readAllLines(filepath.toPath());
-            lines.forEach(line -> {
-                String[] parts = line.split(";", 6);
-                LocalDate date = LocalDate.parse(parts[0]);
-                LocalTime time = LocalTime.parse(parts[1]);
-                LogsList.add(new Logs(date, time, parts[2], parts[3], parts[4], parts[5]));
-            });
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        } while (choice != 0);
     }
-
-    public void addLog(String username, String filename, String action, String result){
-        try(FileWriter Writer = new FileWriter(filepath , true)) {
-            Writer.write(LocalDate.now().toString() + ";" + LocalTime.now().truncatedTo(ChronoUnit.SECONDS) + ";" + username + ";" + action + ";" + filename + ";" + result + System.lineSeparator());
-
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        LogsList.add(new Logs(LocalDate.now(), LocalTime.now(), username, action, filename, result));
-    }
-
-    public void stats(){
-        while (true){
-            System.out.println("1) Total number of actions\n" +
-                    "2) Number of denied access\n" +
-                    "3) Distinct users\n" +
-                    "4) Actions per user\n" +
-                    "5) Top 3 consulted files\n" +
-                    "6) Denied access for a user\n" +
-                    "7) Most active user\n" +
-                    "8) Breakdown of actions by type\n" +
-                    "0) Quit"
-            );
-            System.out.print("choice :");
-            int choice = scanner.nextInt();
-            scanner.nextLine();
-            switch (choice) {
-                case 1 -> System.out.println("Total actions: " + printTotalActions());
-                case 2 -> System.out.println("Denied access count: " + printDeniedAccessCount());
-                case 3 -> System.out.println("Distinct users: " + printDistinctUsers());
-                case 4 -> printActionsPerUser().forEach((user, count) -> System.out.println(user + ": " + count));
-                case 5 -> printTopFiles();
-                case 6 -> printUserDeniedAccess();
-                case 7 -> printMostActiveUser();
-                case 8 -> printActionDistribution();
-                case 0 -> {
-                    System.out.println("Returning to prompt...");
-                    return;
-                }
-                default -> System.out.println("Invalid option.");
-            }
-        }
-
-    }
-
-    public long printTotalActions(){
-        return LogsList.stream().count();
-    }
-
-    public long printDeniedAccessCount(){
-        return LogsList.stream().filter(log -> log.getResult().equals("Refused")).count();
-    }
-
-    public List<String> printDistinctUsers(){
-         return LogsList.stream().map(log -> log.getUser()).distinct().toList() ;
-    }
-
-    public Map<String, Long> printActionsPerUser(){
-        return LogsList.stream().collect(Collectors.groupingBy(log -> log.getUser(), Collectors.counting()));
-    }
-
-    public void printTopFiles(){
-        Map<String, Long> need = LogsList.stream().collect(Collectors.groupingBy(log -> log.getFile(), Collectors.counting()));
-        need.entrySet().stream().sorted(Map.Entry.<String, Long>comparingByValue().reversed()).limit(3).forEach(entry -> System.out.println(entry.getKey() + " :" + entry.getValue()));
-    }
-
-    public void printUserDeniedAccess(){
-        System.out.println("Choose A name :");
-        String name = scanner.nextLine();
-        long count = LogsList.stream().filter(log -> log.getUser().equals(name)).filter(log -> log.getResult().equals("Refused")).count();
-        System.out.println("Denied access for " + name + ": " + count);
-    }
-
-    public void printMostActiveUser(){
-        LogsList.stream().collect(Collectors.groupingBy(log -> log.getUser(), Collectors.counting())).entrySet().stream().sorted(Map.Entry.<String, Long>comparingByValue().reversed()).findFirst().ifPresent(entry -> System.out.println("Most active user: " + entry.getKey() + " (" + entry.getValue() + " actions)"));
-    }
-
-    public void printActionDistribution(){
-        LogsList.stream().collect(Collectors.groupingBy(log -> log.getAction(), Collectors.counting())).forEach((action, count) -> System.out.println(action + " : " + count));
-    }
-
 }

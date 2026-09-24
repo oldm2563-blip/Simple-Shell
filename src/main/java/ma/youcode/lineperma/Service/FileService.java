@@ -1,111 +1,65 @@
 package ma.youcode.lineperma.Service;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+
+import ma.youcode.lineperma.DAO.FileDao;
 import ma.youcode.lineperma.Model.Filen;
+import ma.youcode.lineperma.Model.User;
 
 public class FileService {
 
     Scanner scanner = new Scanner(System.in);
+    FileDao conf = new FileDao();
     Map<String, Filen> fileMap = new HashMap<>();
-    Path path2 = Paths.get("C:\\java-bootcamp\\simple-shell\\src\\main\\resources\\files.txt");
     LogsService log;
 
 
     public FileService(LogsService log){
         this.log = log;
+        fileMap = conf.getAll();
     }
 
-    public void starup(){
-        if (!Files.exists(path2)) {
-             try (FileWriter writer = new FileWriter(path2.toFile(), true)) {
-            } catch (IOException e) {
-                System.out.println("Could not create/write file");
-            }
-        }
 
-        try{
-            List<String> lines = Files.readAllLines(path2);
-            for(String line : lines){
-                String[] parts = line.split(":", 3);
-                String fileName = parts[0];
-                String userName = parts[1];
-                String[] permission = parts[2].split("");
-                fileMap.put(fileName, new Filen(fileName, userName, permission));
-            }
-
-        }
-        catch(IOException e){
-            System.out.println("Could not create/write file");
-        }
-
-    }
-
-    public void touch(String name, String username){
-
-        File file = new File("C:\\java-bootcamp\\simple-shell\\src\\main\\resources\\Linux\\" + name ); 
-
-        try{
-            if (!file.exists()) {
-                file.createNewFile();
-                System.out.println("File created!");
-                try (FileWriter writer = new FileWriter(path2.toFile(), true)) {
-                    writer.write(name + ":" + username + ":---" + System.lineSeparator());
-                }
-                String[] perms = {"-", "-", "-"};
-                fileMap.put(name, new Filen(name, username, perms));
-            }else {System.out.println("File already exists.");}
-
-        }catch(IOException e){
-            System.out.println("Could not create/write file");
-        }
-    }
-
-    public void ls(){
-        for(Map.Entry<String, Filen> entry : fileMap.entrySet()){
-            Filen file = entry.getValue();
-            System.out.println(file.getFile() + " | " + file.getpermissioString() + " | " + file.getusername());
-        }
-    }
-
-    public void nano(String name, String username){  
-
-        File file = new File("C:\\java-bootcamp\\simple-shell\\src\\main\\resources\\Linux\\" + name ); 
+    public void touch(String name, User user){
+        String[] per = {"-", "-", "-"};
+        Filen file = new Filen(name, "", user.getId(), user.getName(), per);
         
-        Filen checker = fileMap.get(name);
+        fileMap.put(name, file);
+        conf.save(file);
+        
+        System.out.println(name + " was created");
+    }
 
-        if (checker == null) {
-            System.out.println("File does not exist: " + name);
-            log.addLog(username, name, "Write", "Refused");
+    public void ls() {
+        if (fileMap.isEmpty()) {
+            System.out.println("No files found.");
             return;
         }
 
-        if(!checker.getusername().equals(username) && !checker.getpermissioString().contains("w")){
-            System.out.println("You dont have acces");
-            log.addLog(username, name, "Write", "Refused");
-            return;
+        for (Map.Entry<String, Filen> entry : fileMap.entrySet()) {
+            Filen file = entry.getValue();
+            
+            System.out.printf("%s\t%s\t%s%n", 
+                file.getpermissioString(), 
+                file.getOwnerUsername(), 
+                file.getFile()
+            );
+        }
+    }
+
+    public void nano(String name, User username){  
+
+        Filen file = fileMap.get(name);
+
+        if (!username.getName().equals(file.getOwnerUsername()) && !file.getpermissioString().contains("w")) {
+            System.out.println("u dont have the RIGHTS");
+            log.newLog(file, "WRITE", "DENIED", username.getId());
+            return ;
         }
 
         StringBuilder sb = new StringBuilder();
-
-        try{
-            if(!file.exists()){
-                file.createNewFile();
-                System.out.println("File created!");
-            }
-        }catch(IOException e){
-            System.out.println("Could not create/write file");
-            return;
-        }
-
         while(true){
             String text = scanner.nextLine();
             
@@ -115,84 +69,43 @@ public class FileService {
                     sb.append(contentBeforeEOF);
                 }
                 break;
-            }   
-
+            }
             sb.append(text).append(System.lineSeparator());
         }
         System.out.println(sb);
 
-        try(FileWriter Writer = new FileWriter(file, true)){
-            Writer.write(sb.toString());
-            System.out.println("Saved successfully!");
-        }catch(IOException e){
-            System.out.println("Could not create/write file");
-        }
-
-        log.addLog(username, name, "Write", "OK");
+        log.newLog(file, "WRITE", "OK", username.getId());
         
+        conf.updateContent(sb.toString(), file);
+
     }
 
-    public void cat(String name, String username){
-        Filen checker = fileMap.get(name);
+    public void cat(String name, User username){
+        Filen file = fileMap.get(name);
 
-        if (checker == null) {
-        System.out.println("File does not exist: " + name);
-        return;
+        if (!username.getName().equals(file.getOwnerUsername()) && !file.getpermissioString().contains("r")) {
+            System.out.println("u dont have the RIGHTS");
+            log.newLog(file, "READ", "DENIED", username.getId());
+            return ;
         }
-
-        if(!checker.getusername().equals(username) && !checker.getpermissioString().contains("r")){
-            System.out.println("You dont have acces");
-            log.addLog(username, name, "Read", "Refused");
-            return;
+        if (file.getContent().isEmpty()) {
+            System.out.println("(Empty txt file)");
+            return ;
         }
-
-        Path file = Paths.get("C:\\java-bootcamp\\simple-shell\\src\\main\\resources\\Linux\\" + name );
-        try{
-            List<String> lines = Files.readAllLines(file);
-            for(String line : lines){
-                System.out.println(line);
-
-            }
-
-        }catch(IOException e){
-            System.out.println("Could not read file: " + e.getMessage());
-        }
-        log.addLog(username, name, "Read", "OK");
-        
+        System.out.println(file.getContent());
+        log.newLog(file, "READ", "OK", username.getId());
     }
 
-    public void chmod(String name, String newPer, String username){
-
-        Filen fileObj = fileMap.get(name);
-        if (fileObj == null) {
-            System.out.println("File does not exist: " + name);
-            return;
+    public void chmod(String name, String per, User username){
+        Filen file = fileMap.get(name);
+        if (!username.getName().equals(file.getOwnerUsername()) && !file.getpermissioString().contains("w")) {
+            System.out.println("u dont have the RIGHTS");
+            log.newLog(file, "SET PERSSION", "DENIED", username.getId());
+            return ;
         }
-
-        if (!fileObj.getusername().equals(username)) {
-            System.out.println("Permission denied: Only the owner (" + fileObj.getusername() + ") can change permissions.");
-            return;
-        }
-
-        if (newPer.length() != 3) {
-            System.out.println("Invalid format. Permission must be 3 characters (e.g., rwx, rw-, ---)");
-            return;
-        }
-
-        String[] permsArray = newPer.split("");
-        fileObj.setPermission(permsArray);
-
-        System.out.println("Permissions updated to '" + newPer + "' for " + name);
-
-
-        try (FileWriter writer = new FileWriter(path2.toFile(), false)) {
-            for (Filen file : fileMap.values()) {
-                String line = file.getFile() + ":" + file.getusername() + ":" + file.getpermissioString();
-                writer.write(line + System.lineSeparator());
-            }
-        } catch (IOException e) {
-            System.out.println("Error saving permissions to file: " + e.getMessage());
-        }
+        conf.updatePermission(per, file);
+        System.out.println("Noice");
+        log.newLog(file, "SET PERSSION", "OK", username.getId());
     } 
 
 }
