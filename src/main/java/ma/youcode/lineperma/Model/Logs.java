@@ -3,19 +3,45 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class Logs {
+    private int id;
     private LocalDate  date;
     private LocalTime time;
-    private String user;
+    private String username;
+    private int userId;
     private String action;
-    private String file;
+    private String filename;
+    private int file_id;
     private String result;
-    public Logs(LocalDate date, LocalTime time, String user, String action, String file, String result) {
+
+    public Logs(int id, LocalDate date, LocalTime time, String username, String action, String filename, String result) {
+        this.id = id;
         this.date = date;
         this.time = time;
-        this.user = user;
+        this.username = username;
         this.action = action;
-        this.file = file;
+        this.filename = filename;
         this.result = result;
+    }
+    public Logs(int id, LocalDate date, LocalTime time,  int userId, String action, int file_id, String result) {
+        this.id = id;
+        this.date = date;
+        this.time = time;
+        this.userId = userId;
+        this.action = action;
+        this.file_id = file_id;
+        this.result = result;
+    }
+    public Logs(LocalDate date, LocalTime time,  int userId, String action, int file_id, String result) {
+        this.date = date;
+        this.time = time;
+        this.userId = userId;
+        this.action = action;
+        this.file_id = file_id;
+        this.result = result;
+    }
+
+    public int getUserId() {
+        return userId;
     }
     public LocalDate getDate() {
         return date;
@@ -23,14 +49,11 @@ public class Logs {
     public LocalTime getTime() {
         return time;
     }
-    public String getUser() {
-        return user;
-    }
     public String getAction() {
         return action;
     }
-    public String getFile() {
-        return file;
+    public int getfile_i() {
+        return file_id;
     }
     public String getResult() {
         return result;
@@ -41,17 +64,27 @@ public class Logs {
     public void setTime(LocalTime time) {
         this.time = time;
     }
-    public void setUser(String user) {
-        this.user = user;
-    }
     public void setAction(String action) {
         this.action = action;
     }
-    public void setFile(String file) {
-        this.file = file;
+    public void setfile_i(int file_id
+    ) {
+        this.file_id = file_id;
     }
     public void setResult(String result) {
         this.result = result;
+    }
+    public int getId() {
+        return id;
+    }
+    public String getUsername() {
+        return username;
+    }
+    public String getFile() {
+        return filename;
+    }
+    public int getFile_id() {
+        return file_id;
     }
 
 
