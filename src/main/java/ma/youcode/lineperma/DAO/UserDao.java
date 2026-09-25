@@ -13,14 +13,14 @@ public class UserDao extends AbstractDao<User>{
     @Override
     public void save(User user) {
         String str = "INSERT into users (name, password) values (?, ?);";
-
-        try(Connection conn = getConnection();
-            PreparedStatement stat = conn.prepareStatement(str)    
+        try{
+            Connection conn = getConnection();
+        try(PreparedStatement stat = conn.prepareStatement(str)    
     ){
         stat.setString(1, user.getName());
         stat.setString(2, user.getPassword());
         stat.executeUpdate();
-
+    }
         }catch(SQLException e){
             System.out.println("Error :" + e);
         }
@@ -39,8 +39,9 @@ public class UserDao extends AbstractDao<User>{
 
     public User findByUsername(String username) {
         String sql = "Select * from users WHERE name = ?";
-        try(Connection conn = getConnection();
-            PreparedStatement stat = conn.prepareStatement(sql);){
+        try{
+            Connection conn = getConnection();
+        try(PreparedStatement stat = conn.prepareStatement(sql);){
                 stat.setString(1, username);
                 try(ResultSet rs = stat.executeQuery()){
                     if (rs.next()) {
@@ -50,6 +51,7 @@ public class UserDao extends AbstractDao<User>{
                         return null;
                     }
                 }
+            }
         }catch(SQLException e){
             System.out.println("Error :" + e);
         }

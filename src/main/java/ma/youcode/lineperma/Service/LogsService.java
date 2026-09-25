@@ -9,6 +9,7 @@ import java.util.*;
 import ma.youcode.lineperma.Model.Filen;
 import ma.youcode.lineperma.DAO.LogDao;
 import ma.youcode.lineperma.DAO.UserDao;
+import ma.youcode.lineperma.Model.User;
 
 
 public class LogsService {
@@ -75,8 +76,12 @@ public class LogsService {
                     System.out.print("l'utilisateur : ");
                     String username = scanner.nextLine();
 
-                    int userid = new UserDao().findByUsername(username).getId();
-
+                    User userr = new UserDao().findByUsername(username);
+                    if (userr == null) {
+                        System.out.println("Couldnt find user");
+                        break;
+                    }
+                    int userid = userr.getId();
                     System.out.println("\n--- Accès refusés ---");
 
                     concon.getDeniedAccessesByUser(userid).forEach(log ->

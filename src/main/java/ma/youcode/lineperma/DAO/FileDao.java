@@ -12,24 +12,27 @@ import ma.youcode.lineperma.Model.Filen;
 public class FileDao extends AbstractDao<Filen> {
     public void save(Filen file){
         String sql = "INSERT INTO files (fileName, content, owner, permission) VALUES (?, ?, ?, ?)";
-        try(Connection conn = getConnection();
-            PreparedStatement stmt = conn.prepareStatement(sql)){
+        
+        try{
+            Connection conn = getConnection();
+        
+        try(PreparedStatement stmt = conn.prepareStatement(sql)){
             stmt.setString(1, file.getFile());
             stmt.setString(2, file.getContent());
             stmt.setInt(3, file.getUserId());
             stmt.setString(4, file.getpermissioString());
 
             stmt.executeUpdate();
-            
+            }
         }catch(SQLException e){
             System.out.println("Error :" + e);
         }
     }
     public Filen findById(int id) {
     String sql = "SELECT f.*, u.name FROM files f LEFT JOIN users u ON f.owner = u.id WHERE f.id = ?";
-
-    try (Connection conn = getConnection();
-         PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try{
+            Connection conn = getConnection();
+    try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 
         stmt.setInt(1, id);
 
@@ -47,7 +50,7 @@ public class FileDao extends AbstractDao<Filen> {
             System.out.println("File doesn't exist");
             return null;
         }
-
+    }
     } catch (SQLException e) {
         System.out.println("Error: " + e.getMessage());
     }
@@ -63,8 +66,9 @@ public class FileDao extends AbstractDao<Filen> {
     public Map<String, Filen> getAll(){
         String sql = "SELECT f.*, u.name FROM files f LEFT JOIN users u ON f.owner = u.id";
         Map<String, Filen> fileMap = new HashMap<>();
-        try(Connection conn = getConnection();
-            PreparedStatement stmt = conn.prepareStatement(sql);
+        try{
+            Connection conn = getConnection();
+        try(PreparedStatement stmt = conn.prepareStatement(sql);
             ResultSet rs = stmt.executeQuery()){
 
                 while (rs.next()) {
@@ -80,6 +84,7 @@ public class FileDao extends AbstractDao<Filen> {
                     Filen file = new Filen(id, fileName, content, ownerId, ownerUsername, permissions);
                     fileMap.put(fileName, file);
                 }
+            }
             }catch(SQLException e){
             System.out.println("Error :" + e);
         }
@@ -89,14 +94,15 @@ public class FileDao extends AbstractDao<Filen> {
 
     public void updatePermission(String per, Filen file){
         String sql = "Update files set permission = ? where id = ?";
-
-        try(Connection conn = getConnection();
-            PreparedStatement stmt = conn.prepareStatement(sql)){
+        try{
+            Connection conn = getConnection();
+        try(PreparedStatement stmt = conn.prepareStatement(sql)){
                 stmt.setString(1, per);
                 stmt.setInt(2, file.getId());
                 stmt.executeUpdate();
                 String[] newPer = per.split("", 3);
                 file.setPermission(newPer);
+            }
             }catch(SQLException e){
             System.out.println("Error :" + e);
         }

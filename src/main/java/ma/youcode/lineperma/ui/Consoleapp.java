@@ -35,7 +35,7 @@ public class Consoleapp {
                     }
                     break;
                 case "help":
-                    System.out.print("Not avaible");
+                    System.out.println("SignUp | Login | help | Exit | Stats");
                     break;
                 case "exit":
                         System.out.print("Goodbye");
